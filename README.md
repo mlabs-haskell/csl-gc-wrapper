@@ -10,12 +10,11 @@ const wrappedCsl = require('cs-runtime-gc')(csl)
 function fixture() {
   const arr = new Uint8Array(Array(10000000).fill(0));
   const pd = lib.PlutusData.new_bytes(arr);
-  // return pd
 }
 
 setInterval(() => {
   for (let i = 0; i < 10; i++) {
-    fixturex()
+    fixture()
   }
 }, 500) // gc will trigger proxies and underlying pointers
 ```
