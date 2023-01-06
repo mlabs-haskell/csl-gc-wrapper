@@ -3,6 +3,7 @@ class PointerStore {
     this.count = 0;
     this.finRegistry = new FinalizationRegistry((id) => this.freePointer(id));
     this.store = new Map();
+    setInterval(() => {console.log(this.store.size)}, 1000)
   }
 
   register(obj) {
@@ -19,7 +20,9 @@ class PointerStore {
   }
 
   freePointer(id) {
-    this.store.get(id).free();
+    try {
+      this.store.get(id).free();
+    } catch (_) {}
     this.store.delete(id);
   }
 }
