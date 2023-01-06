@@ -1,4 +1,4 @@
-class CSLRefStore {
+class PointerStore {
   constructor() {
     this.count = 0;
     this.finRegistry = new FinalizationRegistry((id) => this.freePointer(id));
@@ -24,10 +24,10 @@ class CSLRefStore {
   }
 }
 
-const refstore = new CSLRefStore();
+const refstore = new PointerStore();
 
 module.exports = (lib) => {
-  if (lib.__gcWrapped) { return lib }
+  if (lib.__gcPointerStore) { return lib }
 
   const classWrap = (classObj) => {
     Object.getOwnPropertyNames(classObj).forEach((propName) => {
@@ -47,10 +47,10 @@ module.exports = (lib) => {
 
   Object.keys(lib).forEach((k) => {
     if (k[0].toUpperCase() == k[0] && k[0] != "_") {
-      lib[k] = classWrap(lib[k]);
+      classWrap(lib[k])
     }
   });
 
-  lib.__gcWrapped = true;
+  lib.__gcPointerStore = refstore;
   return lib;
 };
