@@ -1,5 +1,5 @@
 {
-  "name": "csl-runtime-gc",
+  "name": "csl-gc-wrapper",
   "version": "1.0.4",
   "description": "",
   "main": "index.js",
