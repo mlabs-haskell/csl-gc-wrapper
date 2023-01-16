@@ -1,35 +1,11 @@
-class PointerStore {
-  constructor() {
-    this.count = 0;
-    this.finRegistry = new FinalizationRegistry((id) => this.freePointer(id));
-    this.store = new Map();
-  }
-
-  register(obj) {
-    // store the pointer
-    const id = this.count;
-    this.store.set(id, obj);
-
-    // create and register the proxy with the finalization registry
-    const px = new Proxy(obj, {});
-    this.finRegistry.register(px, id);
-
-    this.count++;
-    return px;
-  }
-
-  freePointer(id) {
-    try {
-      this.store.get(id).free();
-    } catch (_) {}
-    this.store.delete(id);
-  }
-}
-
-const refstore = new PointerStore();
-
 module.exports = (lib) => {
   if (lib.__gcPointerStore) { return lib }
+
+  const finRegistry = new FinalizationRegistry((x) => {
+    try {
+      x.free()
+    } catch (_) {}
+  });
 
   const classWrap = (classObj) => {
     Object.getOwnPropertyNames(classObj).forEach((propName) => {
@@ -38,7 +14,9 @@ module.exports = (lib) => {
         classObj[propName] = function () {
           const retVal = oldMethod.apply(classObj, arguments);
           if (retVal && retVal.ptr) {
-            return refstore.register(retVal);
+            const px = new Proxy(retVal, {})
+            finRegistry.register(px, retVal, px);
+            return px
           }
           return retVal;
         };
@@ -53,6 +31,6 @@ module.exports = (lib) => {
     }
   });
 
-  lib.__gcPointerStore = refstore;
+  lib.__gcPointerStore = finRegistry;
   return lib;
 };
