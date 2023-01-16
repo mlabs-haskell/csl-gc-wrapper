@@ -1,6 +1,6 @@
 {
-  "name": "csl-gc-wrapper",
-  "version": "1.0.4",
+  "name": "@mlabs-haskell/csl-gc-wrapper",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
