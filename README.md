@@ -5,7 +5,7 @@ This is a small library that provides a wrapper for managing garbage collection 
 Example usage:
 ```javascript
 const csl = require("@emurgo/cardano-serialization-lib-browser");
-const wrappedCsl = require('cs-runtime-gc')(csl)
+const wrappedCsl = require('@mlabs-haskell/csl-gc-wrapper')(csl)
 
 function fixture() {
   const arr = new Uint8Array(Array(10000000).fill(0));
