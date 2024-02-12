@@ -13,7 +13,7 @@ module.exports = (lib) => {
         const oldMethod = classObj[propName];
         classObj[propName] = function () {
           const retVal = oldMethod.apply(classObj, arguments);
-          if (retVal && retVal.ptr) {
+          if (retVal && (retVal.__wbg_ptr || retVal.ptr)) {
             const px = new Proxy(retVal, {})
             finRegistry.register(px, retVal, px);
             return px
